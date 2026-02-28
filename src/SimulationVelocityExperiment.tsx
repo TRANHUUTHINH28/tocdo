@@ -69,6 +69,7 @@ export default function SimulationVelocityExperiment() {
   const [magOffset, setMagOffset] = useState({ x: 0, y: 0 });
   const [isDraggingMag, setIsDraggingMag] = useState(false);
   const [showGuide, setShowGuide] = useState(false);
+  const [showCaliperGuide, setShowCaliperGuide] = useState(false);
   const isDraggingCaliper = useRef(false);
   
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -1014,7 +1015,15 @@ export default function SimulationVelocityExperiment() {
 
                 <div className="flex flex-col md:flex-row items-center gap-6 bg-slate-50 rounded-2xl p-6 border border-slate-100">
                   <div className="flex-1 space-y-1">
-                    <h3 className="font-bold text-slate-800">Nhập kết quả đo</h3>
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-bold text-slate-800">Nhập kết quả đo</h3>
+                      <button 
+                        onClick={() => setShowCaliperGuide(true)}
+                        className="text-[10px] font-bold text-red-600 hover:text-red-700 underline uppercase tracking-wider"
+                      >
+                        Hướng dẫn đọc thước
+                      </button>
+                    </div>
                     <p className="text-xs text-slate-500">Đọc giá trị trên thước kẹp và nhập vào ô bên dưới (mm)</p>
                   </div>
                   <div className="flex gap-3 w-full md:w-auto">
@@ -1250,6 +1259,69 @@ export default function SimulationVelocityExperiment() {
                   className="w-full py-4 bg-slate-900 text-white rounded-2xl font-bold hover:bg-slate-800 transition-all"
                 >
                   Đã hiểu, bắt đầu thí nghiệm
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Caliper Guide Modal */}
+      <AnimatePresence>
+        {showCaliperGuide && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowCaliperGuide(false)}
+              className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
+            />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="relative bg-white w-full max-w-2xl rounded-[32px] shadow-2xl overflow-hidden"
+            >
+              <div className="p-8 space-y-6">
+                <div className="flex justify-between items-center">
+                  <h3 className="text-2xl font-bold text-slate-900">Cách đọc thước kẹp Vernier (0.05mm)</h3>
+                  <button onClick={() => setShowCaliperGuide(false)} className="p-2 hover:bg-slate-100 rounded-full">
+                    <X size={24} />
+                  </button>
+                </div>
+                
+                <div className="grid md:grid-cols-2 gap-8">
+                  <div className="space-y-4">
+                    <div className="bg-red-50 p-4 rounded-2xl border border-red-100">
+                      <div className="text-red-600 font-bold text-sm uppercase mb-1">Bước 1: Đọc phần nguyên</div>
+                      <p className="text-slate-600 text-sm">Nhìn vào vạch số <b>0 của du xích</b>. Vạch này nằm sau vạch nào trên thân thước chính thì đó là số mm nguyên.</p>
+                    </div>
+                    <div className="bg-blue-50 p-4 rounded-2xl border border-blue-100">
+                      <div className="text-blue-600 font-bold text-sm uppercase mb-1">Bước 2: Đọc phần thập phân</div>
+                      <p className="text-slate-600 text-sm">Tìm vạch trên <b>du xích</b> trùng khít nhất với một vạch bất kỳ trên thân thước chính.</p>
+                    </div>
+                    <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                      <div className="text-slate-600 font-bold text-sm uppercase mb-1">Bước 3: Tính toán</div>
+                      <p className="text-slate-600 text-sm">Giá trị = Phần nguyên + (Số thứ tự vạch trùng × 0.05).</p>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-slate-50 p-6 rounded-2xl border border-slate-200 flex flex-col justify-center items-center text-center space-y-4">
+                    <div className="text-4xl font-mono font-bold text-slate-900">18.00 <span className="text-lg text-slate-400">mm</span></div>
+                    <p className="text-xs text-slate-500 italic">Ví dụ: Vạch 0 của du xích trùng với vạch 18 trên thước chính.</p>
+                    <div className="w-full h-px bg-slate-200" />
+                    <div className="text-sm text-slate-600">
+                      <span className="font-bold text-red-600">Lưu ý:</span> Trong mô phỏng này, đèn <b>TOUCH</b> sẽ sáng xanh khi thước chạm sát bi.
+                    </div>
+                  </div>
+                </div>
+                
+                <button 
+                  onClick={() => setShowCaliperGuide(false)}
+                  className="w-full py-4 bg-slate-900 text-white font-bold rounded-xl hover:bg-slate-800 transition-all"
+                >
+                  Đã hiểu, quay lại thí nghiệm
                 </button>
               </div>
             </motion.div>
