@@ -1,0 +1,5 @@
+{
+  "name": "Physics Velocity Lab",
+  "description": "Interactive Grade 10 Physics simulation for measuring instantaneous velocity using a photogate timer and inclined track.",
+  "requestFramePermissions": []
+}
